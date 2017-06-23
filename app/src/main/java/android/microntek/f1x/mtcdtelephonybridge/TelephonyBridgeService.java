@@ -89,7 +89,7 @@ public class TelephonyBridgeService extends Service {
         values.put(CallLog.Calls.NUMBER, entryFields[1]);
         values.put(CallLog.Calls.DATE, System.currentTimeMillis());
         values.put(CallLog.Calls.DURATION, 0);
-        values.put(CallLog.Calls.TYPE, Integer.parseInt(entryFields[5]));
+        values.put(CallLog.Calls.TYPE, convertCallStatus(Integer.parseInt(entryFields[5])));
         values.put(CallLog.Calls.NEW, 1);
         values.put(CallLog.Calls.CACHED_NAME, "");
         values.put(CallLog.Calls.CACHED_NUMBER_TYPE, 0);
@@ -100,7 +100,18 @@ public class TelephonyBridgeService extends Service {
         }
     }
 
-
+    int convertCallStatus(int mtcCallStatus) {
+        switch(mtcCallStatus) {
+            case 1:
+                return CallLog.Calls.OUTGOING_TYPE;
+            case 2:
+                return CallLog.Calls.INCOMING_TYPE;
+            case 3:
+                return CallLog.Calls.MISSED_TYPE;
+            default:
+                return 0;
+        }
+    }
 
     List<String> getCallHistoryList() {
         String content = Settings.System.getString(getContentResolver(), "MTC.BT.logList");
